@@ -1,2 +1,2 @@
-const a = 10;
-console.log(11);
+console.log(__dirname);
+console.log(__filename);
