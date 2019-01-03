@@ -66,4 +66,14 @@ server.listen(8080, (err) => {
 
 **require**
 
+```js
 
+```
+
+---
+
+**path**
+
+- basename // 获取文件名(不含扩展名)
+- dirname // 获取文件所在文件夹路径
+- join // 拼接
