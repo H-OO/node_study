@@ -103,3 +103,9 @@ server.listen(8080, (err) => {
 - update [name] // 更新
 - run // 运行`scripts`定义的命令
 - cache [clean|ls] // 包缓存
+
+---
+
+**第三方**
+
+- iconv-lite // 解决编码问题
