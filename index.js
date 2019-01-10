@@ -1,3 +1,8 @@
 const path = require('path');
-const res = path.win32;
-console.log('')
+const Tree = require('./self_module/tree');
+
+const tree = new Tree({
+  entry: path.resolve(__dirname, 'src')
+});
+
+tree.init();
