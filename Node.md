@@ -106,9 +106,43 @@ server.listen(8080, (err) => {
 
 ---
 
-**第三方**
+**lib**
 
 - iconv-lite // 解决编码问题
+- marked // md转html
+- browser-sync // 本地server
+- progress // 控制台进度
+- fs-extra // 操作文件
+
+```js
+// browser-sync
+const browserSync = require('browser-sync');
+browserSync({
+  notify: false, // 是否显示提示框
+  server: 'src'
+})
+```
 
 ---
 
+**流**
+
+- createReadStrem
+- createWriteStrem
+
+---
+
+**创建socket服务器**
+
+```js
+const net = require('net');
+// 创建并注册连接事件
+const server = net.createServer((socket) => {})
+// 监听端口
+server.listen(3000, (err) => {
+  if (err) throw err; // 端口被占用
+  // todo..
+});
+```
+
+- 

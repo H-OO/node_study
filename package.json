@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/H-OO/node_study/issues"
   },
-  "homepage": "https://github.com/H-OO/node_study#readme"
+  "homepage": "https://github.com/H-OO/node_study#readme",
+  "devDependencies": {
+    "browser-sync": "^2.26.3"
+  }
 }
