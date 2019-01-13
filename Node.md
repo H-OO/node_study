@@ -113,6 +113,7 @@ server.listen(8080, (err) => {
 - browser-sync // 本地server
 - progress // 控制台进度
 - fs-extra // 操作文件
+- nodemon // 监听js文件自动重启终端
 
 ```js
 // browser-sync
