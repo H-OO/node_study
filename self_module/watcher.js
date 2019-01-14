@@ -2,7 +2,6 @@
  * 监听文件改变
  */
 const fs = require('fs');
-const path = require('path');
 
 class Watcher {
   constructor(args) {
@@ -20,3 +19,10 @@ class Watcher {
 }
 
 module.exports = Watcher;
+
+// use
+// const Watcher = require('./self_module/watcher');
+// const watcher = new Watcher({
+//   dir: path.resolve(__dirname, 'src/c.js')
+// });
+// watcher.init();

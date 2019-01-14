@@ -38,8 +38,7 @@ class Tree {
       // 树形前缀
       const prefix = '│  '.repeat(level);
       // 遍历文件夹
-      const foldersLen = folders.length;
-      folders.forEach((folder, i) => {
+      folders.forEach(folder => {
         console.log(`${prefix}├─ ${folder}`);
         this.getDirStruct(path.resolve(dir, folder), level + 1); // 递归深入文件夹
       });
@@ -55,3 +54,10 @@ class Tree {
 }
 
 module.exports = Tree;
+
+// use
+// const Tree = require('./self_module/tree');
+// const tree = new Tree({
+//   entry: path.resolve(__dirname, 'src')
+// });
+// tree.init();
