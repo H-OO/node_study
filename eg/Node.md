@@ -77,4 +77,6 @@ const todo = require('todo'); // 模块导入(只写模块名)
 - install [-D|-S|-g] `ModuleName` // 安装包
 - uninstall [-D|-S|-g] `ModuleName` // 卸载包
 - npm list // 查看已安装的node包列表
-- npm info `ModuleName` // 查看包的详细信息
+- npm info `ModuleName` // 查看包的其他版本
+- npm install `ModuleName`@x.y.z // 指定版本安装
+- 

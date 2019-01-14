@@ -20,8 +20,10 @@
   },
   "homepage": "https://github.com/H-OO/node_study#readme",
   "devDependencies": {
-    "browser-sync": "^2.26.3",
-    "node": "^11.6.0",
-    "nodemon": "^1.18.9"
+    "browser-sync": "^2.26.3"
+  },
+  "dependencies": {
+    "md5-node": "^1.0.1",
+    "silly-datetime": "^0.1.2"
   }
 }
