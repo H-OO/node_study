@@ -133,6 +133,30 @@ readStream.pipe(writeStream); // 读取文件流通过管道写入文件流
 
 ---
 
+**events**
+
+解决异步问题
+
+```js
+const events = require('events');
+const EventEmitter = new events.EventEmitter();
+// 监听 todo 事件
+EventEmitter.on('todo', args => {
+  console.log('todo..');
+  console.log(args); // {a: 123}
+});
+
+// 模拟异步
+setTimeout(() => {
+  // 触发 todo 事件
+  EventEmitter.emit('todo', {
+    a: 123
+  });
+}, 2000);
+```
+
+---
+
 **第三方包**
 
 - md5-node // md5
