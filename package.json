@@ -23,6 +23,7 @@
     "browser-sync": "^2.26.3"
   },
   "dependencies": {
+    "ejs": "^2.6.1",
     "md5-node": "^1.0.1",
     "nodemon": "^1.18.9",
     "silly-datetime": "^0.1.2"

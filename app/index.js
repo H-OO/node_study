@@ -1,15 +1,9 @@
-const events = require('events');
-const EventEmitter = new events.EventEmitter();
-// 监听 todo 事件
-EventEmitter.on('todo', args => {
-  console.log('todo..');
-  console.log(args);
+const http = require('http');
+const route = require('./tools/express-route');
+const app = http.createServer(route);
+
+route.get('/login', (req, res) => {
+  res.end('login');
 });
 
-// 模拟异步
-setTimeout(() => {
-  // 触发 todo 事件
-  EventEmitter.emit('todo', {
-    a: 123
-  });
-}, 2000);
+app.listen(8888);

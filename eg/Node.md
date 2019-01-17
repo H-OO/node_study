@@ -103,13 +103,13 @@ const fs = require('fs');
 // createReadStream { (filename: string) => ReadStream }
 const readStream = fs.createReadStream('./Node.md');
 // 文件过大时会多次读取，防止阻塞
-readStream.on('data', (chunk) => {
+readStream.on('data', chunk => {
   console.log(chunk);
 });
 // 读取结束
 readStream.on('end', () => {
   console.log('end');
-})
+});
 
 // createWriteStream { (filename: string) => WriteStream }
 const writeStream = fs.createWriteStream('./output.txt');
@@ -157,10 +157,79 @@ setTimeout(() => {
 
 ---
 
+**ejs 模板引擎**
+
+- <%= %> // 赋值语句(浏览器不解析 HTML 片段)
+- <%- %> // 赋值语句(浏览器解析 HTML 片段)
+- <% %> // 逻辑语句
+- renderFile // 获取文件，替换模板占位符
+
+```ejs
+<body>
+  <h2>ejs模板引擎</h2>
+  <h3><%= msg %></h3>
+  <h4><%= html %></h4>
+  <h4><%- html %></h4>
+  <ul>
+    <% for(let i = 0, l = list.length; i < l; i++) { %>
+      <li><%= list[i] %></li>
+    <% } %>
+  </ul>
+</body>
+```
+
+```js
+const ejs = require('ejs');
+const http = require('http');
+const path = require('path');
+
+const app = http.createServer((req, res) => {
+  let { url: address } = req;
+  if (address !== '/favicon.ico') {
+    const filename = path.join(__dirname, '../static/template.ejs');
+    const props = {
+      msg: 'EJS',
+      list: ['a', 'b', 'c'],
+      html: '<h2>html</h2>'
+    };
+    // renderFile { filename: string, props: object, callback: () => void => void }
+    ejs.renderFile(filename, props, (err, data) => {
+      if (err) throw err;
+      res.write(data);
+      res.end();
+    });
+  }
+});
+
+app.listen(8888);
+```
+
+---
+
+**GET 与 POST 获取参数**
+
+```js
+// GET
+const { query } = url.parse(req.url, true);
+
+// POST
+let query = '';
+req.on('data', chunk => {
+  // 接收中
+  query += chunk;
+});
+req.on('end', () => {
+  // 完成接收
+})
+```
+
+---
+
 **第三方包**
 
 - md5-node // md5
 - silly-datetime // 日期格式化
+- ejs // 模板引擎
 
 ```js
 // md5-node
