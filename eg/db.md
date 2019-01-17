@@ -167,7 +167,8 @@ db.goods.update({"name": "a"}, {$set: {"price": 666}})
 
 **删除数据**
 
-- db.goods.remove()
+- db.goods.deleteMany() // 删除全部匹配条数
+- db.goods.deleteOne() // 只删除一条
 
 ```
 // 假设`goods`表中的数据如下
@@ -178,10 +179,18 @@ db.goods.update({"name": "a"}, {$set: {"price": 666}})
 
 // 删除
 // ---
-db.goods.remove({"name": "a"}) // 删除所有字段"name"为"a"的数据
+db.goods.deleteMany({"name": "a"}) // 删除所有字段"name"为"a"的数据
 // ↓
 { "_id" : ObjectId("5c404e1a89d8c0cf3f10365a"), "name" : "b", "price" : 777 }
 { "_id" : ObjectId("5c404ed289d8c0cf3f10365c"), "name" : "c", "price" : 888 }
 // ---
-db.goods.remove({"name": "a"}) // 仅删除一个字段"name"为"a"的数据
+db.goods.deleteOne({"name": "a"}) // 仅删除一个字段"name"为"a"的数据
+// ↓
+{ "_id" : ObjectId("5c404e1a89d8c0cf3f10365a"), "name" : "b", "price" : 777 }
+{ "_id" : ObjectId("5c404ed289d8c0cf3f10365c"), "name" : "c", "price" : 888 }
+{ "_id" : ObjectId("5c404edb89d8c0cf3f10365d"), "name" : "a", "price" : 999 }
 ```
+
+---
+
+**索引和 explain的使用**
