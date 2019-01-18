@@ -193,4 +193,38 @@ db.goods.deleteOne({"name": "a"}) // 仅删除一个字段"name"为"a"的数据
 
 ---
 
-**索引和 explain的使用**
+**索引**
+
+索引是对数据库表中一列或多列的值进行排序的数据结构，可以让查询数据变得更快
+
+场景：假设`user`表中有很多条数据，设置索引可大幅缩短查询时间
+
+- db.user.ensureIndex() // 设置`user`表索引
+- db.user.getIndexes() // 获取当前`user`表的全部索引
+- db.user.dropIndex() // 删除`user`表索引
+
+```
+// 设置单个索引
+db.user.ensureIndex({"name":1})
+// 查询含"name"字段的数据会提速
+
+// 设置复合索引
+db.user.ensureIndex({"name":-1, "age":1})
+// 同时查询含"name"与"age"字段的数据会提速
+// 注意：单独查含"age"字段的数据不会提速
+
+// 设置唯一索引(值只能是唯一的)
+db.user.ensureIndex({"name":1}, {"unique": true})
+
+// 1代表键名升序，-1代表键名降序
+```
+
+---
+
+**explain**
+
+用于获取某个操作的详细信息
+
+- .explain("executionStats")
+
+输出`explain.executionStats.executionTimeMillis` // 具体执行时间
