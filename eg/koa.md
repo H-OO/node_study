@@ -50,7 +50,7 @@ router.get('/:aid/:pwd', async ctx => {
 - 错误处理中间件
 
 ```js
-/** 
+/**
  * 应用级中间件
  * 匹配全部路由
  */
@@ -66,7 +66,7 @@ router.get('/', async (ctx, next) => {
   console.log('/ handler1');
   await next();
 });
-router.get('/', async (ctx) => {
+router.get('/', async ctx => {
   console.log('/ handler2');
   ctx.body = 'Hello koa-router';
 });
@@ -98,8 +98,8 @@ app.use(async (ctx, next) => {
 
 过程：先从外向内，再从内向外
 
-情景1：在`app.use`方法中，`next`先执行应用级中间件，最后再路由中间件  
-情景2：在`router.get/post`方法中，同名路由`next`会根据它们注册的先后顺序进行执行
+情景 1：在`app.use`方法中，`next`先执行应用级中间件，最后再路由中间件  
+情景 2：在`router.get/post`方法中，同名路由`next`会根据它们注册的先后顺序进行执行
 
 ---
 
@@ -111,9 +111,11 @@ app.use(async (ctx, next) => {
 // views { (filename: string , option: object) => f }
 const views = require('koa-views'); // 依赖 ejs 模块
 // 使用 koa-views 中间件 (文件名需使用绝对路径)
-app.use(views(path.join(__dirname, '../views'), {
-  extension: 'ejs' // 模板文件名后缀
-}));
+app.use(
+  views(path.join(__dirname, '../views'), {
+    extension: 'ejs' // 模板文件名后缀
+  })
+);
 // 在路由中间件中使用
 router.get('/', async (ctx, next) => {
   // 模板数据
@@ -196,7 +198,7 @@ app.use(serve(path.join(__dirname, '../static'))); // 注册静态资源文件�
 
 可同时配置多个静态资源文件夹
 
-----
+---
 
 **koa-art-template**
 
@@ -211,7 +213,7 @@ render(app, {
   debug: process.env.NODE_ENV !== 'production'
 });
 // 在路由中间件中使用
-router.get('/', (ctx) => {
+router.get('/', ctx => {
   const tmpData = {
     title: 'art-template',
     content: '<div>this content</div>'
@@ -234,7 +236,7 @@ router.get('/', (ctx) => {
 <body>
   <!-- 引入公共模块 -->
   {{ include './common.art' }}
-  
+
   <!-- 已转义 -->
   {{content}}
   <!-- 未转义 -->
@@ -247,4 +249,125 @@ router.get('/', (ctx) => {
 
 ```art
 <div>common</div>
+```
+
+---
+
+**koa cookie**
+
+`成员`
+
+- maxAge // 多少毫秒后过期
+- expires // 过期的日期
+- path // cookie 可访问的路径，默认为'/'
+- domain // cookie 域名
+- secure // 是否在 https 协议下使用 cookie，默认为 false
+- httpOnly // cookie 是否只能在服务器上访问，默认为 true
+- overwrite // 是否覆盖同名的 cookie，默认为 false
+
+`api`
+
+- ctx.cookie.set // 设置
+- ctx.cookie.get // 获取
+
+注意：koa 中 cookie 默认不能使用中文
+
+`设置中文 cookie`
+
+```js
+// 设置前先将中文转 base64
+new Buffer('你好世界').toString('base64') // 中文转base64
+
+// 获取后将 base64 转中文
+new Buffer('5L2g5aW95LiW55WM', 'base64').toString() // base64转汉字
+```
+
+`举个栗子`
+
+```js
+router.get('/set', async (ctx, next) => {
+  const userinfo = new Buffer('你好世界').toString('base64'); // 汉字 cookie
+  ctx.cookies.set('userinfo', userinfo, {
+    maxAge: 60 * 1000 * 60 // 多少毫秒后过期
+  });
+});
+router.get('/get', async (ctx, next) => {
+  const userinfoBase64 = ctx.cookies.get('userinfo');
+  const userinfo = new Buffer(userinfoBase64, 'base64').toString();
+  console.log(userinfo); // 你好世界
+});
+```
+
+---
+
+**koa-session**
+
+服务端 session 基于 cookie 进行值获取
+
+- key // cookie key 默认为 'koa:sess'
+- maxAge // 多少毫秒后过期 【常用】
+- autoCommit // 
+- overwrite // 是否覆盖同名 cookie，默认为 true
+- httpOnly // 是否只有服务器端可获取，默认为 true
+- signed // 签名，默认为 true
+- rolling // 每次请求都强行设置 cookie，重置过期时间，默认为 false
+- renew // 快过期时重新设置 cookie，默认为false 【常用】
+
+```js
+const session = require('koa-session');
+app.keys = ['some secret hurr']; // cookie 的签名
+const CONFIG = {
+  key: 'koa:sess',
+  maxAge: 5000, // 86400000
+  autoCommit: true,
+  overwrite: true,
+  httpOnly: true,
+  signed: true,
+  rolling: false,
+  renew: false
+};
+// 设置 session
+router.get('/set', async (ctx, next) => {
+  ctx.session.userinfo = 'hello world';
+  console.log(ctx.session.userinfo);
+  ctx.body = 'SET';
+});
+// 获取 session
+router.get('/get', async (ctx, next) => {
+  console.log(ctx.session.userinfo);
+  ctx.body = 'GET';
+});
+
+app.use(session(CONFIG, app));
+```
+
+---
+
+**单例**
+
+```js
+class Db {
+  // 静态方法
+  static getInstance() {
+    console.log('instance');
+    if (!Db.instance) {
+      Db.instance = new Db();
+    }
+    return Db.instance;
+  }
+  constructor() {
+    console.log('实例化');
+    this.connect();
+  }
+  connect() {
+    console.log('连接')
+  }
+  find() {
+    console.log('查询');
+  }
+}
+const db1 = Db.getInstance();
+const db2 = Db.getInstance();
+db1.find();
+db2.find();
 ```
