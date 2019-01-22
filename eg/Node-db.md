@@ -4,7 +4,7 @@
 
 - npm i -S mongodb // 安装模块
 - const { MongoClient } = require('mongodb'); // 引入模块
-- const url = 'mongodb://127.0.0.1:27017/dev'; // 数据库远程地址，dev表示数据库名称
+- const url = 'mongodb://127.0.0.1:27017/dev'; // 数据库远程地址，dev 表示数据库名称
 - MongoClient.connect(url, (err, db) => {}) // 连接数据库
 
 ```js
@@ -43,7 +43,7 @@ db.collection('test').insertOne(
     name: 'a',
     age: 1
   },
-  err => {
+  (err, commandResult) => {
     if (err) {
       console.log('error');
       return;
@@ -51,7 +51,7 @@ db.collection('test').insertOne(
     console.log('success');
     client.close(); // 断开连接
   }
-)
+);
 
 // 增(多条)
 db.collection('test').insertMany(
@@ -65,7 +65,7 @@ db.collection('test').insertMany(
       age: 2
     }
   ],
-  err => {
+  (err, commandResult) => {
     if (err) {
       console.log('error');
       return;
@@ -74,4 +74,18 @@ db.collection('test').insertMany(
     client.close(); // 断开连接
   }
 );
+
+// 改
+db.collection('test').updateOne({name: 'a'}, { $set: {age: 1} }, (err, commandResult) => {
+  if (err) {
+    console.log('error');
+    return;
+  }
+  console.log('success');
+  client.close(); // 断开连接
+});
+
+// 通过ObjectID获取数据
+const { MongoClient, ObjectID } = require('mongodb');
+db.collection('test').find({_id: ObjectID('5c46f942b6f49e26208f5fc5')})
 ```
