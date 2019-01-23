@@ -1,7 +1,6 @@
 const path = require('path');
 const Koa = require('koa');
 const render = require('koa-art-template');
-const serve = require('koa-static');
 const router = require('./routes');
 const app = new Koa();
 
@@ -13,17 +12,6 @@ render(app, {
   debug: process.env.NODE_ENV !== 'production'
 });
 
-// 应用级中间件
-app.use(async (ctx, next) => {
-  await next();
-  // 错误处理
-  if (ctx.response.status === 404) {
-    ctx.body = 404;
-  }
-});
-
-// 注册静态资源文件夹路径
-app.use(serve(path.join(__dirname, 'public')));
 // 启动路由
 app.use(router.routes()).use(router.allowedMethods());
 
