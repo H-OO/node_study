@@ -9,7 +9,7 @@ const app = new Koa();
 // 为`ctx`提供了`render`方法，接收文件名
 render(app, {
   root: path.join(__dirname, 'views'),
-  extname: '.art',
+  extname: '.html',
   debug: process.env.NODE_ENV !== 'production'
 });
 
