@@ -11,7 +11,11 @@ const user = require('./user');
 router.use(async (ctx, next) => {
   const host = ctx.request.header.host;
   ctx.state._HOST_ = `http://${host}`; // 全局`art-template`变量仓库
-  await next();
+  if (true) {
+    await next(); // 向下匹配路由
+  } else {
+    ctx.body = '用户未登录';
+  }
 });
 
 // 配置路由
