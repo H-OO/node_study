@@ -62,7 +62,7 @@
 
                       <div class="space-6"></div>
 
-                      <form>
+                      <form action="{{_HOST_}}/admin/login/doLogin" method="POST">
                         <fieldset>
                           <label class="block clearfix">
                             <span class="block input-icon input-icon-right">
@@ -70,6 +70,7 @@
                                 type="text"
                                 class="form-control"
                                 placeholder="用户名"
+                                name="username"
                               />
                               <i class="icon-user"></i>
                             </span>
@@ -81,6 +82,7 @@
                                 type="password"
                                 class="form-control"
                                 placeholder="密码"
+                                name="password"
                               />
                               <i class="icon-lock"></i>
                             </span>
@@ -111,7 +113,7 @@
                             </label>
 
                             <button
-                              type="button"
+                              type="submit"
                               class="width-35 pull-right btn btn-sm btn-primary"
                             >
                               <i class="icon-key"></i> 登录

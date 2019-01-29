@@ -3,6 +3,8 @@ const Koa = require('koa');
 const render = require('koa-art-template');
 const serve = require('koa-static');
 const router = require('./routes');
+const bodyParser = require('koa-bodyparser');
+
 const app = new Koa();
 
 // session
@@ -36,6 +38,8 @@ app.use(async (ctx, next) => {
   }
 });
 
+// 用于获取 post 请求参数
+app.use(bodyParser());
 // session
 app.use(session(CONFIG, app));
 // 注册静态资源文件夹路径

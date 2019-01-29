@@ -18,7 +18,7 @@ router.use(async (ctx, next) => {
     await next(); // 向下匹配路由
   } else {
     console.log('用户未登录');
-    if (ctx.url !== '/admin/login') {
+    if (ctx.url !== '/admin/login' && ctx.url !== '/admin/login/doLogin') {
       ctx.redirect('/admin/login');
     } else {
       await next();
