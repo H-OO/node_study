@@ -91,14 +91,16 @@
                           <label class="block clearfix">
                             <span class="block input-icon input-icon-right">
                               <input
-                                type="password"
+                                type="text"
                                 class="form-control"
-                                placeholder="验证吗"
+                                placeholder="验证码"
                                 style="width:200px;float:left;"
+                                name="code"
                               />
                               <img
-                                style="float:right;"
-                                src="https://www.itying.com/koa/admin_express.php?m=Public&a=verify&rand=1521453067"
+                                class="code"
+                                style="float:right;cursor:pointer;"
+                                src="{{_HOST_}}/admin/login/code"
                                 alt=""
                               />
                             </span>
@@ -141,5 +143,11 @@
     <!-- /.main-container -->
 
     <!-- basic scripts -->
+    <script>
+      var code = document.querySelector('.code');
+      code.onclick = function() {
+        code.src = '{{ _HOST_ }}/admin/login/code?t=' + new Date().getTime();
+      };
+    </script>
   </body>
 </html>

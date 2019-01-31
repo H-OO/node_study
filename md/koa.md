@@ -406,5 +406,23 @@ app.listen(9000);
 **svg-captcha**
 
 ```js
+const svgCaptcha = require('svg-captcha');
+router.get('/code', async (ctx, next) => {
+  // create 普通验证码
+  // createMathExpr 加法验证码
+  const captcha = svgCaptcha.create({
+    size: 4,
+    fontSize: 50,
+    width: 100,
+    height: 40,
+    background: '#cc9966'
+  }); // 生成验证码图
+  // captcha.data 图片
+  // captcha.text 文本
+  // 保存验证码对应文本
+  ctx.session.code = captcha.text;
+  // 设置响应头
+  ctx.response.type = 'image/svg+xml';
+  ctx.body = captcha.data;
+});
 ```
-

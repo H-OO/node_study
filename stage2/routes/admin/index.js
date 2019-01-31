@@ -1,6 +1,7 @@
 /**
  * admin router
  */
+const url = require('url');
 const Router = require('koa-router');
 const router = new Router();
 
@@ -13,12 +14,17 @@ router.use(async (ctx, next) => {
   const host = ctx.request.header.host;
   ctx.state._HOST_ = `http://${host}`; // 全局`art-template`变量仓库
   const { userinfo } = ctx.session;
+  const { pathname } = url.parse(ctx.url); // 获取路由地址
   if (userinfo) {
     console.log('用户已登录');
     await next(); // 向下匹配路由
   } else {
     console.log('用户未登录');
-    if (ctx.url !== '/admin/login' && ctx.url !== '/admin/login/doLogin') {
+    if (
+      pathname !== '/admin/login' &&
+      pathname !== '/admin/login/doLogin' &&
+      pathname !== '/admin/login/code'
+    ) {
       ctx.redirect('/admin/login');
     } else {
       await next();
