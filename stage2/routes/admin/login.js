@@ -14,20 +14,34 @@ router.get('/', async (ctx, next) => {
 
 router.post('/doLogin', async ctx => {
   const { username, password, code } = ctx.request.body;
-  // console.log(username, password, code);
-  if (code === ctx.session.code) {
+  console.log(username, password, code);
+  // console.log(tools.md5(password));
+  console.log(code.toLowerCase(), ctx.session.code.toLowerCase());
+  if (code.toLowerCase() === ctx.session.code.toLowerCase()) {
     // 验证码通过
-    // const flag = { username, password: tools.md5(password) };
-    // await DB.find('admin', flag).then(res => {
-    //   if (res.length > 0) {
-    //     ctx.session.userinfo = res[0];
-    //     ctx.redirect('/admin/user/list');
-    //   }
-    // });
-    ctx.redirect('/admin/user/list');
+    const flag = { username, password: tools.md5(password) };
+    // console.log(flag);
+    await DB.find('admin', flag).then(res => {
+      // console.log(res);
+      if (res.length > 0) {
+        ctx.session.userinfo = res[0];
+        ctx.redirect('/admin/user/list');
+      } else {
+        // 用户不存在或密码错误
+        console.log('用户不存在或密码错误');
+        ctx.render('admin/error', {
+          message: '用户名或密码错误',
+          redirect: ctx.state._HOST_ + '/admin/login'
+        })
+      }
+    });
   } else {
     // 验证码失败
-    ctx.redirect('/admin/login');
+    console.log('验证码失败');
+    ctx.render('admin/error', {
+      message: '验证码失败，3秒后自动回退',
+      redirect: ctx.state._HOST_ + '/admin/login'
+    });
   }
   // 验证是否合法
 

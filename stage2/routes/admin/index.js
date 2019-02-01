@@ -13,13 +13,12 @@ const login = require('./login');
 router.use(async (ctx, next) => {
   const host = ctx.request.header.host;
   ctx.state._HOST_ = `http://${host}`; // 全局`art-template`变量仓库
-  const { userinfo } = ctx.session;
-  const { pathname } = url.parse(ctx.url); // 获取路由地址
-  if (userinfo) {
+  if (ctx.session.userinfo) {
     console.log('用户已登录');
     await next(); // 向下匹配路由
   } else {
     console.log('用户未登录');
+    const { pathname } = url.parse(ctx.url); // 获取路由地址
     if (
       pathname !== '/admin/login' &&
       pathname !== '/admin/login/doLogin' &&
