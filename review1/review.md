@@ -146,7 +146,72 @@ fs.unlink('./t/t.js', err => {
 ### 1.3.2 递归打印目录结构
 
 ```js
+// logDir.js
 const fs = require('fs');
+class LogDir {
+  constructor(dirName) {
+    this.level = 0;
+    this.read(dirName);
+  }
+  read(dirName) {
+    try {
+      const members = fs.readdirSync(dirName);
+      const len = members.length - 1;
+      members.forEach((member, i) => {
+        const filename = `${dirName}/${member}`;
+        const stats = fs.statSync(filename);
+        if (stats.isDirectory()) {
+          if (i !== len) {
+            console.log(`${'   '.repeat(this.level)}┣━ ${member}`);
+          } else {
+            console.log(`${'   '.repeat(this.level)}┗━ ${member}`);
+          }
+          this.level++;
+          this.read(filename);
+        } else {
+          if (i !== len) {
+            console.log(`${'   '.repeat(this.level)}┣━ ${member}`);
+          } else {
+            console.log(`${'   '.repeat(this.level)}┗━ ${member}`);
+          }
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+}
+module.exports = LogDir;
+
+// use
+const LogDir = require('./module/logDir');
+new LogDir('./src/b');
+```
+
+### 1.3.3 创建读写流
+
+- createReadStream // 读取流
+- createWriteStream // 写入流
+
+```js
+const fs = require('fs');
+// --- 读取流
+const readStream = fs.createReadStream('test.txt');
+let content = ''; // 内容
+let count = 0; // 次数
+readStream.on('data', chunk => {
+  content += chunk;
+  count++;
+});
+readStream.on('end', () => {
+  console.log(content);
+  console.log(count);
+});
+readStream.on('error', err => {
+  console.log(err);
+});
+// --- 写入流
+
 ```
 
 # 第三方模块
