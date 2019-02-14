@@ -234,6 +234,23 @@ const writeStream = fs.createWriteStream('output.js');
 readStream.pipe(writeStream); // 读 → 写
 ```
 
+## 1.4 path 模块
+
+路径拼接
+
+### 1.4.1 举个栗子
+
+- join // 拼接路径，忽略多余`/`
+- resolve // 拼接路径
+
+```js
+const path = require('path');
+// --- join
+path.join(__dirname, 'src/') // **/src/
+// --- resolve
+path.resolve(__dirname, 'src/') // **/src
+```
+
 # 第三方模块
 
 ## 1.1 md5-node
