@@ -196,7 +196,7 @@ new LogDir('./src/b');
 ```js
 const fs = require('fs');
 // --- 读取流
-const readStream = fs.createReadStream('test.txt');
+const readStream = fs.createReadStream('test.js');
 let content = ''; // 内容
 let count = 0; // 次数
 readStream.on('data', chunk => {
@@ -208,10 +208,30 @@ readStream.on('end', () => {
   console.log(count);
 });
 readStream.on('error', err => {
+  // no such file or directory
   console.log(err);
 });
 // --- 写入流
+const writeStream = fs.createWriteStream('test.js');
+const content = `console.log('Hello World');`;
+writeStream.on('finish', () => {
+  console.log('写入完成');
+});
+writeStream.on('error', err => {
+  console.log(err);
+});
+writeStream.write(content);
+writeStream.end(); // 标志写入完成，触发`finish`事件
+```
 
+### 1.3.4 读写流管道
+
+```js
+const fs = require('fs');
+// 创建读取流
+const readStream = fs.createReadStream('input.js');
+const writeStream = fs.createWriteStream('output.js');
+readStream.pipe(writeStream); // 读 → 写
 ```
 
 # 第三方模块
