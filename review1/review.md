@@ -290,4 +290,154 @@ const sd = require('silly-datetime');
 sd.format(new Date(), 'YYYY-MM-DD') // 1970-01-01
 ```
 
+## 1.3 ejs
 
+模板引擎
+
+### 1.3.1 简单的栗子
+
+- <%=  %> // 赋值语法，转义
+- <%-  %> // 赋值语法，不转义
+- <%  %> // 编程语法
+
+```js
+const http = require('http');
+const ejs = require('ejs');
+const app = http.createServer((req, res) => {
+  ejs.renderFile('statics/index.html', {
+    msg: '替换占位符', // 占位符 <%= msg%>
+    html: '<h2>HTML片段</h2>' // HTML片段 <%- html %>
+  }, (err, data) => {
+    if (err) {
+      console.log(err);
+      return false;
+    }
+    res.end(data);
+  });
+});
+app.listen(9000);
+// --- 编程语法
+// <% for (let i = 0; i < 5; i++) { %>
+//   <li><%= i %></li>
+// <% } %>
+```
+
+# 基础知识
+
+## 1.1 路由原理
+
+### 1.1.1 举个栗子
+
+```js
+// --- index.js
+const http = require('http');
+const router = require('./module/router');
+const app = http.createServer((req, res) => {
+  router.statics(req, res, 'statics');
+});
+app.listen(9000);
+// --- router.js
+const url = require('url');
+const fs = require('fs');
+const path = require('path');
+const events = require('events');
+const EventEmitter = new events.EventEmitter();
+const mimeModule = require('./getMime');
+exports.statics = function(req, res, staticPath) {
+  let { pathname } = url.parse(req.url, true);
+  if (pathname !== '/favicon.ico') {
+    if (pathname === '/') {
+      pathname = '/index.html';
+    }
+    const extname = path.extname(pathname);
+    const filename = path.join(staticPath, pathname);
+    fs.readFile(filename, (err, data) => {
+      if (err) {
+        console.log(err);
+        fs.readFile(`${statics}/404.html`, (err, data) => {
+          if (err) {
+            console.log(err);
+            res.write('404');
+          } else {
+            res.writeHead(200, { 'Content-Type': 'text/html;charset=utf8' });
+            res.write(data);
+          }
+          res.end();
+        });
+      } else {
+        mimeModule.getMime(extname, EventEmitter);
+        EventEmitter.on('get_mime', mime => {
+          res.writeHead(200, {'Content-Type': `${mime};charset=utf8`});
+          // res.write(data); // write after end
+          res.end(data);
+        });
+      }
+    });
+  } else {
+    res.end();
+  }
+}
+// --- getMime.js
+const fs = require('fs');
+const path = require('path');
+exports.getMime = function(extname, EventEmitter) {
+  const filename = path.join(__dirname, '../public/mime/mime.json');
+  fs.readFile(filename, 'utf-8', (err, dataJSON) => {
+    if (err) {
+      console.log(err);
+    } else {
+      const data = JSON.parse(dataJSON);
+      EventEmitter.emit('get_mime', data[extname]);
+    }
+  });
+};
+```
+
+## 1.2 请求方式
+
+客户端请求服务端的方式
+
+- get
+- post
+
+### 1.2.1 获取请求方式
+
+```js
+const http = require('http');
+const app = http.createServer((req, res) => {
+  console.log(req.method); // 获取请求方式
+  res.end('请求完成，断开连接');
+});
+app.listen(9000);
+```
+
+### 1.2.2 获取请求参数
+
+```js
+// --- get与post请求参数获取
+const http = require('http');
+const url = require('url');
+const app = http.createServer((req, res) => {
+  const method = req.method.toLowerCase();
+  if (method === 'get') {
+    // 假设请求地址为 127.0.0.1:9000?aid=1
+    const { query } = url.parse(req.url, true);
+    console.log(query); // { aid: '1' }
+  } else if (method === 'post') {
+    // 假设使用 x-www-form-urlencoded 格式传递参数
+    // key | value
+    // aid | 1
+    // level | 6
+    let queryStr = '';
+    req.on('data', chunk => {
+      queryStr += chunk;
+    });
+    req.on('end', () => {
+      const { query } = url.parse(`?${queryStr}`, true);
+      console.log(query); // { aid: '1', level: '6' }
+    });
+  }
+  res.end('请求完成，断开连接');
+});
+app.listen(9000);
+```
