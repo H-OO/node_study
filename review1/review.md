@@ -251,6 +251,21 @@ path.join(__dirname, 'src/') // **/src/
 path.resolve(__dirname, 'src/') // **/src
 ```
 
+## 1.5 events 模块
+
+异步事件驱动
+
+### 1.5.1 举个栗子
+
+```js
+const events = require('events');
+const EventEmitter = new events.EventEmitter();
+EventEmitter.on('test', data => {
+  console.log(data); // { a: '123' }
+});
+EventEmitter.emit('test', { a: '123' });
+```
+
 # 第三方模块
 
 ## 1.1 md5-node

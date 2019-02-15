@@ -2,6 +2,8 @@ const http = require('http');
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
+const events = require('events');
+const EventEmitter = new events.EventEmitter();
 const mimeModule = require('./module/getMime');
 
 const app = http.createServer((req, res) => {
@@ -28,10 +30,14 @@ const app = http.createServer((req, res) => {
           res.end();
         });
       } else {
-        const mime = mimeModule.getMime(extname);
-        res.writeHead(200, {'Content-Type': `${mime};charset=utf8`});
-        res.write(data);
-        res.end();
+        // const mime = mimeModule.getMime(extname);
+        mimeModule.getMime(extname, EventEmitter);
+        EventEmitter.on('get_mime', mime => {
+          console.log('on get_mime');
+          res.writeHead(200, {'Content-Type': `${mime};charset=utf8`});
+          // res.write(data); // write after end
+          res.end(data);
+        });
       }
     });
   } else {
@@ -40,3 +46,9 @@ const app = http.createServer((req, res) => {
 });
 
 app.listen(9000);
+
+
+// EventEmitter.on('test', data => {
+//   console.log(data); // { a: '123' }
+// });
+// EventEmitter.emit('test', { a: '123' });
