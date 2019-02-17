@@ -393,7 +393,7 @@ exports.getMime = function(extname, EventEmitter) {
 };
 ```
 
-## 1.2 请求方式
+## 1.2 请求方式与请求参数
 
 客户端请求服务端的方式
 
@@ -441,3 +441,49 @@ const app = http.createServer((req, res) => {
 });
 app.listen(9000);
 ```
+
+## 1.3 路由封装
+
+将路由功能单独抽离
+
+### 1.3.1 初级路由
+
+将不同路由对应的处理函数作为对象成员，通过路由路径进行动态调用
+
+```js
+// --- index.js
+const http = require('http');
+const url = require('url');
+const easyRouter = require('./module/easy-router');
+const app = http.createServer((req, res) => {
+  let { pathname } = url.parse(req.url);
+  if (pathname !== '/favicon.ico') {
+    if (pathname === '/') {
+      pathname = '/index';
+    }
+    try {
+      const routerName = pathname.slice(1);
+      easyRouter[routerName](req, res);
+    } catch (err) {
+      easyRouter['index'](req, res);
+    }
+  } else {
+    res.end();
+  }
+});
+app.listen(9000);
+// --- easy-router.js
+const router = {
+  index(req, res) {
+    res.end('index');
+  },
+  login(req, res) {
+    res.end('login');
+  }
+};
+module.exports = router;
+```
+
+### 1.3.2 express
+
+
